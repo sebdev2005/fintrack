@@ -1,10 +1,7 @@
 package com.sebdev.fintrack.domain.models;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -19,7 +16,7 @@ public class Category {
     private final LocalDateTime createdAt;
     private final boolean active;
 
-
+    @Builder
     public Category(UUID id, String name, UUID idUser, LocalDateTime createdAt, boolean active){
         if(name == null || name.isBlank()){
             throw new IllegalArgumentException("el nombre no puede estar vacio");
