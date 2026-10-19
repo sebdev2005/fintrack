@@ -2,6 +2,7 @@ package com.sebdev.fintrack.infrastructure.persistence;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,8 @@ public class CategoryEntity {
     @Id
     private UUID id;
 
+    @NotBlank
+    @Size(max = 40)
     @Column(length = 40)
     private String name;
 

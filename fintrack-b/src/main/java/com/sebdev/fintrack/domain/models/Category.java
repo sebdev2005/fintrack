@@ -1,9 +1,9 @@
 package com.sebdev.fintrack.domain.models;
 
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -18,8 +18,11 @@ public class Category {
 
     @Builder
     public Category(UUID id, String name, UUID idUser, LocalDateTime createdAt, boolean active){
-        if(name == null || name.isBlank()){
-            throw new IllegalArgumentException("el nombre no puede estar vacio");
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("El nombre no puede estar vacío");
+        }
+        if (name.length() > 40) {
+            throw new IllegalArgumentException("El nombre no puede superar los 40 caracteres");
         }
         this.id = id;
         this.name = name;

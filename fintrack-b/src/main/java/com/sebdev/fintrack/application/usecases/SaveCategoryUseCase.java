@@ -10,7 +10,7 @@ public class SaveCategoryUseCase {
 
     private final CategoryRepositoryPort port;
 
-    SaveCategoryUseCase(CategoryRepositoryPort port){
+    public SaveCategoryUseCase(CategoryRepositoryPort port){
         this.port = port;
     }
 
