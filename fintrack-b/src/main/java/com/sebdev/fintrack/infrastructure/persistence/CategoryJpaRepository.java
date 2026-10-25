@@ -11,4 +11,5 @@ public interface CategoryJpaRepository extends JpaRepository<CategoryEntity, UUI
 
     @Query("SELECT c FROM CategoryEntity c WHERE(c.idUser = :idUser or c.idUser IS NULL) AND c.active = TRUE")
     List<CategoryEntity> categories(@Param("idUser") UUID idUser);
+
 }

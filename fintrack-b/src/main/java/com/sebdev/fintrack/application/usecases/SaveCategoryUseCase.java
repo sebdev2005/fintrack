@@ -3,6 +3,7 @@ package com.sebdev.fintrack.application.usecases;
 import com.sebdev.fintrack.application.ports.CategoryRepositoryPort;
 import com.sebdev.fintrack.domain.models.Category;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -19,7 +20,7 @@ public class SaveCategoryUseCase {
                 .id(UUID.randomUUID())
                 .name(name)
                 .idUser(idUser)
-                .createdAt(LocalDateTime.now())
+                .createdAt(Instant.now())
                 .active(true).build();
 
         return port.save(category);

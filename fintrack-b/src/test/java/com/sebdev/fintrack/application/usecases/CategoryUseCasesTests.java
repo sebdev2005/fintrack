@@ -1,11 +1,14 @@
 package com.sebdev.fintrack.application.usecases;
 
 import com.sebdev.fintrack.application.ports.CategoryRepositoryPort;
+import com.sebdev.fintrack.domain.exceptions.custom.CategoryOwnershipException;
+import com.sebdev.fintrack.domain.exceptions.custom.InvalidCategoryException;
 import com.sebdev.fintrack.domain.models.Category;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,9 +51,36 @@ class CategoryUseCasesTests {
 
     @Test
     void domainRejectsCategoryNamesLongerThanDatabaseLimit() {
-        assertThrows(IllegalArgumentException.class, () -> Category.builder()
+        assertThrows(InvalidCategoryException.class, () -> Category.builder()
                 .name("x".repeat(41))
                 .build());
+    }
+
+    @Test
+    void deactivatedCategoryCanBeCreatedAndIsInactive() {
+        UUID userId = UUID.randomUUID();
+        Category category = Category.builder()
+                .id(UUID.randomUUID())
+                .name("Food")
+                .idUser(userId)
+                .active(true)
+                .build();
+
+        Category deactivated = category.deactivated(userId);
+
+        assertFalse(deactivated.isActive());
+    }
+
+    @Test
+    void categoryCannotBeDeactivatedByAnotherUser() {
+        Category category = Category.builder()
+                .id(UUID.randomUUID())
+                .name("Food")
+                .idUser(UUID.randomUUID())
+                .active(true)
+                .build();
+
+        assertThrows(CategoryOwnershipException.class, () -> category.deactivated(UUID.randomUUID()));
     }
 
     private static class InMemoryCategoryRepository implements CategoryRepositoryPort {
@@ -67,6 +97,13 @@ class CategoryUseCasesTests {
         public List<Category> categories(UUID idUser) {
             queriedUserId = idUser;
             return List.copyOf(savedCategories);
+        }
+
+        @Override
+        public Optional<Category> findById(UUID id) {
+            return savedCategories.stream()
+                    .filter(category -> category.getId().equals(id))
+                    .findFirst();
         }
     }
 }
