@@ -22,7 +22,6 @@ public class SaveCategoryUseCase {
                 .idUser(idUser)
                 .createdAt(Instant.now())
                 .active(true).build();
-
         return port.save(category);
     }
 }
