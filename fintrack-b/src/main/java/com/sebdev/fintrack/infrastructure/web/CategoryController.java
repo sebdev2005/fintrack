@@ -8,8 +8,11 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -33,25 +36,27 @@ public class CategoryController {
     }
 
     @PostMapping
-    public CategoryResponse save(@Valid @RequestBody SaveCategoryRequest request) {
-        Category category = saveCategoryUseCase.execute(request.name(), request.idUser());
+    public CategoryResponse save(@Valid @RequestBody SaveCategoryRequest request, @AuthenticationPrincipal Jwt jwt) {
+        UUID idUser = UUID.fromString(jwt.getSubject());
+        Category category = saveCategoryUseCase.execute(request.name(), idUser);
         return CategoryResponse.from(category);
     }
 
     @GetMapping
-    public List<CategoryResponse> list(@RequestParam UUID idUser) {
+    public List<CategoryResponse> list(@AuthenticationPrincipal Jwt jwt) {
+        UUID idUser = UUID.fromString(jwt.getSubject());
         return listCategoriesUseCase.execute(idUser).stream()
                 .map(CategoryResponse::from)
                 .toList();
     }
     @PatchMapping("/{idCategory}/deactivate")
-    public CategoryResponse deactivate(@PathVariable UUID idCategory, @RequestParam UUID idUser){
+    public CategoryResponse deactivate(@PathVariable UUID idCategory, @AuthenticationPrincipal Jwt jwt){
+        UUID idUser = UUID.fromString(jwt.getSubject());
         return CategoryResponse.from(deactivateCategoryUseCase.execute(idCategory,idUser));
     }
 
     public record SaveCategoryRequest(
-            @NotBlank @Size(max = 40) String name,
-            @NotNull UUID idUser
+            @NotBlank @Size(max = 40) String name
     ) {
     }
 
@@ -59,7 +64,7 @@ public class CategoryController {
             UUID id,
             String name,
             UUID idUser,
-            LocalDateTime createdAt,
+            Instant createdAt,
             boolean active
     ) {
         private static CategoryResponse from(Category category) {

@@ -27,9 +27,6 @@ public class Category {
         if (name.length() > 40) {
             throw new InvalidCategoryException("El nombre de la categoría no puede superar los 40 caracteres");
         }
-        if (idUser == null) {
-            throw new InvalidCategoryException("El usuario de la categoría no puede ser nulo");
-        }
         this.id = id;
         this.name = name;
         this.idUser = idUser;
