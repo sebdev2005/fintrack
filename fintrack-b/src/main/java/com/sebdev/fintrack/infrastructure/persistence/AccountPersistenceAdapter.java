@@ -2,11 +2,13 @@ package com.sebdev.fintrack.infrastructure.persistence;
 
 import com.sebdev.fintrack.application.ports.AccountRepositoryPort;
 import com.sebdev.fintrack.domain.models.Account;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository
 public class AccountPersistenceAdapter implements AccountRepositoryPort {
 
     private final AccountJpaRepository repository;

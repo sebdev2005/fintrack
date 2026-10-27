@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AccountJpaRepository extends JpaRepository<AccountEntity, UUID> {
-    @Query("SELECT a FROM AccountEntity WHERE (a.idUser = : idUser) AND a.active = TRUE")
+
+    @Query("SELECT a FROM AccountEntity a WHERE (a.idUser = : idUser) AND a.active = TRUE")
     List<AccountEntity> accounts(@Param("idUser") UUID idUser);
 
 }

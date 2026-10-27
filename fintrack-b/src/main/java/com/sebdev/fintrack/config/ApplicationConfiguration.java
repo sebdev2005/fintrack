@@ -1,9 +1,8 @@
 package com.sebdev.fintrack.config;
 
+import com.sebdev.fintrack.application.ports.AccountRepositoryPort;
 import com.sebdev.fintrack.application.ports.CategoryRepositoryPort;
-import com.sebdev.fintrack.application.usecases.DeactivateCategoryUseCase;
-import com.sebdev.fintrack.application.usecases.ListCategoriesUseCase;
-import com.sebdev.fintrack.application.usecases.SaveCategoryUseCase;
+import com.sebdev.fintrack.application.usecases.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,5 +22,20 @@ public class ApplicationConfiguration {
     @Bean
     DeactivateCategoryUseCase deactivateCategoryUseCase(CategoryRepositoryPort categoryRepositoryPort){
         return new DeactivateCategoryUseCase(categoryRepositoryPort);
+    }
+
+    @Bean
+    SaveAccountUseCase saveAccountUseCase(AccountRepositoryPort accountRepositoryPort){
+        return new SaveAccountUseCase(accountRepositoryPort);
+    }
+
+    @Bean
+    ListAccountsUseCase listAccountsUseCase(AccountRepositoryPort accountRepositoryPort){
+        return new ListAccountsUseCase(accountRepositoryPort);
+    }
+
+    @Bean
+    DeactivateAccountUseCase deactivateAccountUseCase(AccountRepositoryPort accountRepositoryPort){
+        return new DeactivateAccountUseCase(accountRepositoryPort);
     }
 }
