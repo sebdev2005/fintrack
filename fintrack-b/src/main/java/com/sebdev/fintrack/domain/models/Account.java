@@ -2,6 +2,7 @@ package com.sebdev.fintrack.domain.models;
 
 import com.sebdev.fintrack.domain.exceptions.custom.AccountOwnershipException;
 import com.sebdev.fintrack.domain.exceptions.custom.InvalidAccountException;
+import com.sebdev.fintrack.domain.models.types.AccountType;
 import lombok.Builder;
 import lombok.Getter;
 

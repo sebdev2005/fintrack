@@ -5,9 +5,10 @@ import com.sebdev.fintrack.application.usecases.DeactivateAccountUseCase;
 import com.sebdev.fintrack.application.usecases.ListAccountsUseCase;
 import com.sebdev.fintrack.application.usecases.SaveAccountUseCase;
 import com.sebdev.fintrack.domain.models.Account;
-import com.sebdev.fintrack.domain.models.AccountType;
+import com.sebdev.fintrack.domain.models.types.AccountType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -55,7 +56,7 @@ public class AccountController {
 
 
     public record AccountRequest(
-            @NotBlank @Size(max = 40)String name, @NotBlank AccountType type, @NotBlank BigDecimal initialBalance,
+            @NotBlank @Size(max = 40)String name, @NotNull AccountType type, @NotNull BigDecimal initialBalance,
             String color, String bank
     ){
 

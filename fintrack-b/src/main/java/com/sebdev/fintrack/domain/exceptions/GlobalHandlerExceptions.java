@@ -1,11 +1,6 @@
 package com.sebdev.fintrack.domain.exceptions;
 
-import com.sebdev.fintrack.domain.exceptions.custom.FieldVoidException;
-import com.sebdev.fintrack.domain.exceptions.custom.AccountOwnershipException;
-import com.sebdev.fintrack.domain.exceptions.custom.CategoryOwnershipException;
-import com.sebdev.fintrack.domain.exceptions.custom.InvalidAccountException;
-import com.sebdev.fintrack.domain.exceptions.custom.InvalidCategoryException;
-import com.sebdev.fintrack.domain.exceptions.custom.ResourceNotFoundException;
+import com.sebdev.fintrack.domain.exceptions.custom.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -73,5 +68,15 @@ public class GlobalHandlerExceptions {
                 LocalDateTime.now().toString()
         );
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(InvalidMovementException.class)
+    public ResponseEntity<ErrorResponse> handlerInvalidMovement(InvalidMovementException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                LocalDateTime.now().toString()
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }

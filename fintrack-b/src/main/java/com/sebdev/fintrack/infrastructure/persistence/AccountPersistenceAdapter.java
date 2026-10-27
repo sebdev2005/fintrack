@@ -25,7 +25,7 @@ public class AccountPersistenceAdapter implements AccountRepositoryPort {
 
     @Override
     public List<Account> accounts(UUID idUser) {
-        return repository.accounts(idUser)
+        return repository.findByIdUserAndActiveTrue(idUser)
                 .stream().map(AccountPersistenceAdapter::toDomain)
                 .toList();
     }
