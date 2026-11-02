@@ -6,14 +6,12 @@ import com.sebdev.fintrack.application.usecases.SaveCategoryUseCase;
 import com.sebdev.fintrack.domain.models.Category;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -69,11 +67,11 @@ public class CategoryController {
     ) {
         private static CategoryResponse from(Category category) {
             return new CategoryResponse(
-                    category.getId(),
-                    category.getName(),
-                    category.getIdUser(),
-                    category.getCreatedAt(),
-                    category.isActive()
+                    category.id(),
+                    category.name(),
+                    category.idUser(),
+                    category.createdAt(),
+                    category.active()
             );
         }
     }

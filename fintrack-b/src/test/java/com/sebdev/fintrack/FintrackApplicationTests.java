@@ -39,8 +39,8 @@ class FintrackApplicationTests {
 		void createsAccountWithValidData() {
 			Account account = validAccount().build();
 
-			assertEquals("Cuenta de ahorro", account.getName());
-			assertTrue(account.isActive());
+			assertEquals("Cuenta de ahorro", account.name());
+			assertTrue(account.active());
 		}
 
 		@ParameterizedTest

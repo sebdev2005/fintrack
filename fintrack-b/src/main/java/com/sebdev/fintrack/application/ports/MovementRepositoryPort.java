@@ -2,10 +2,14 @@ package com.sebdev.fintrack.application.ports;
 
 import com.sebdev.fintrack.domain.models.Movement;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface MovementRepositoryPort {
     Movement save(Movement movement);
-    Movement findById(UUID idMovement);
-    Movement findByAccount(UUID idAccount);
+    Optional<Movement> findById(UUID idMovement);
+    List<Movement> findByUser(UUID idUser);
+    List<Movement> findByAccount(UUID idAccount);
+
 }

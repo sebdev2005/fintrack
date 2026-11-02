@@ -50,15 +50,15 @@ public class AccountPersistenceAdapter implements AccountRepositoryPort {
     }
     private static AccountEntity toEntity(Account account){
         return new AccountEntity(
-                account.getId(),
-                account.getIdUser(),
-                account.getName(),
-                account.getType(),
-                account.getInitialBalance(),
-                account.getColor(),
-                account.getBank(),
-                account.isActive(),
-                account.getCreatedAt()
+                account.id(),
+                account.idUser(),
+                account.name(),
+                account.type(),
+                account.initialBalance(),
+                account.color(),
+                account.bank(),
+                account.active(),
+                account.createdAt()
         );
     }
 }
