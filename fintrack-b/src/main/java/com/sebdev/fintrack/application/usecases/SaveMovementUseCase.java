@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public class SaveMovementUseCase {
 
-    public record Command(UUID id, UUID idAccount, UUID idCategory, MovementType type, BigDecimal amount,
+    public record Command(UUID idAccount, UUID idCategory, MovementType type, BigDecimal amount,
                           LocalDate occurredOn, String note){}
 
     private final AccountRepositoryPort accountRepositoryPort;

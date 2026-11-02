@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -34,14 +35,14 @@ public class AccountController {
     }
     @PostMapping("/createAccount")
     public AccountResponse save(@Valid @RequestBody AccountRequest request, @AuthenticationPrincipal Jwt jwt){
-        UUID idUser =  UUID.fromString(jwt.getSubject());
+        UUID idUser =  UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         Account account = saveAccountUseCase.execute( new SaveAccountUseCase.Command(request.name, request.type, request.initialBalance, request.color, request.bank), idUser);
         return AccountResponse.from(account);
     }
 
     @GetMapping("/accounts")
     public List<AccountResponse> accounts(@AuthenticationPrincipal Jwt jwt){
-        UUID idUser =  UUID.fromString(jwt.getSubject());
+        UUID idUser =  UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         return listAccountsUseCase.execute(idUser).stream()
                 .map(AccountResponse::from).toList();
 
@@ -49,7 +50,7 @@ public class AccountController {
 
     @PatchMapping("/{idAccount}/deactivate")
     public AccountResponse deactivate(@PathVariable UUID idAccount, @AuthenticationPrincipal Jwt jwt){
-        UUID idUser =  UUID.fromString(jwt.getSubject());
+        UUID idUser =  UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         Account account = deactivateAccountUseCase.execute(idAccount, idUser);
         return AccountResponse.from(account);
     }

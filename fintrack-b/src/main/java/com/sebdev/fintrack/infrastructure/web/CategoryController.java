@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -35,21 +36,21 @@ public class CategoryController {
 
     @PostMapping
     public CategoryResponse save(@Valid @RequestBody SaveCategoryRequest request, @AuthenticationPrincipal Jwt jwt) {
-        UUID idUser = UUID.fromString(jwt.getSubject());
+        UUID idUser = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         Category category = saveCategoryUseCase.execute(request.name(), idUser);
         return CategoryResponse.from(category);
     }
 
     @GetMapping
     public List<CategoryResponse> list(@AuthenticationPrincipal Jwt jwt) {
-        UUID idUser = UUID.fromString(jwt.getSubject());
+        UUID idUser = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         return listCategoriesUseCase.execute(idUser).stream()
                 .map(CategoryResponse::from)
                 .toList();
     }
     @PatchMapping("/{idCategory}/deactivate")
     public CategoryResponse deactivate(@PathVariable UUID idCategory, @AuthenticationPrincipal Jwt jwt){
-        UUID idUser = UUID.fromString(jwt.getSubject());
+        UUID idUser = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         return CategoryResponse.from(deactivateCategoryUseCase.execute(idCategory,idUser));
     }
 
