@@ -34,7 +34,7 @@ public class CategoryController {
         this.deactivateCategoryUseCase = deactivateCategoryUseCase;
     }
 
-    @PostMapping
+    @PostMapping("/createCategory")
     public CategoryResponse save(@Valid @RequestBody SaveCategoryRequest request, @AuthenticationPrincipal Jwt jwt) {
         UUID idUser = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         Category category = saveCategoryUseCase.execute(request.name(), idUser);

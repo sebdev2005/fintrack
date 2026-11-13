@@ -7,6 +7,7 @@ import com.sebdev.fintrack.application.usecases.SaveMovementUseCase;
 import com.sebdev.fintrack.domain.models.Movement;
 import com.sebdev.fintrack.domain.models.types.MovementType;
 import com.sebdev.fintrack.infrastructure.persistence.MovementEntity;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -22,7 +23,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/movements")
+@RequestMapping("/api/movements")
 public class MovementController {
 
     private final SaveMovementUseCase saveMovementUseCase;
@@ -35,14 +36,14 @@ public class MovementController {
         this.listMovementForAccountUseCase = listMovementForAccountUseCase;
     }
 
-    @PostMapping
-    public MovementResponse save(MovementRequest request, @AuthenticationPrincipal Jwt jwt){
+    @PostMapping("/createMovement")
+    public MovementResponse save(@Valid @RequestBody MovementRequest request, @AuthenticationPrincipal Jwt jwt){
         UUID idUser = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         Movement movement = saveMovementUseCase.execute(new SaveMovementUseCase.Command(request.idAccount,request.idCategory,request.type,request.amount, request.occurredOn,request.note), idUser);
         return MovementResponse.from(movement);
     }
 
-    @GetMapping("/movementsForAccounts")
+    @GetMapping("/forAccounts")
     public List<MovementResponse> movementsForAccount(@RequestParam UUID idAccount, @AuthenticationPrincipal Jwt jwt){
         UUID idUser = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         return listMovementForAccountUseCase.movements(idAccount, idUser)

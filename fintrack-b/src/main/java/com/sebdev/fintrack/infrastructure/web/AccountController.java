@@ -40,7 +40,7 @@ public class AccountController {
         return AccountResponse.from(account);
     }
 
-    @GetMapping("/accounts")
+    @GetMapping
     public List<AccountResponse> accounts(@AuthenticationPrincipal Jwt jwt){
         UUID idUser =  UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         return listAccountsUseCase.execute(idUser).stream()

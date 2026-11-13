@@ -44,7 +44,6 @@ public class MovementEntity {
     @NotBlank
     private LocalDate occurredOn;
 
-    @NotNull
     @Size(max = 200)
     private String note;
 
