@@ -1,7 +1,6 @@
 package com.sebdev.fintrack.infrastructure.persistence;
 
 import com.sebdev.fintrack.application.ports.CategoryRepositoryPort;
-import com.sebdev.fintrack.domain.exceptions.custom.ResourceNotFoundException;
 import com.sebdev.fintrack.domain.models.Category;
 import org.springframework.stereotype.Repository;
 
@@ -39,11 +38,11 @@ public class CategoryPersistenceAdapter implements CategoryRepositoryPort {
 
     private static CategoryEntity toEntity(Category category) {
         return new CategoryEntity(
-                category.getId(),
-                category.getName(),
-                category.getIdUser(),
-                category.getCreatedAt(),
-                category.isActive()
+                category.id(),
+                category.name(),
+                category.idUser(),
+                category.createdAt(),
+                category.active()
         );
     }
 

@@ -2,11 +2,13 @@ package com.sebdev.fintrack.infrastructure.persistence;
 
 import com.sebdev.fintrack.application.ports.AccountRepositoryPort;
 import com.sebdev.fintrack.domain.models.Account;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository
 public class AccountPersistenceAdapter implements AccountRepositoryPort {
 
     private final AccountJpaRepository repository;
@@ -23,7 +25,7 @@ public class AccountPersistenceAdapter implements AccountRepositoryPort {
 
     @Override
     public List<Account> accounts(UUID idUser) {
-        return repository.accounts(idUser)
+        return repository.findByIdUserAndActiveTrue(idUser)
                 .stream().map(AccountPersistenceAdapter::toDomain)
                 .toList();
     }
@@ -48,15 +50,15 @@ public class AccountPersistenceAdapter implements AccountRepositoryPort {
     }
     private static AccountEntity toEntity(Account account){
         return new AccountEntity(
-                account.getId(),
-                account.getIdUser(),
-                account.getName(),
-                account.getType(),
-                account.getInitialBalance(),
-                account.getColor(),
-                account.getBank(),
-                account.isActive(),
-                account.getCreatedAt()
+                account.id(),
+                account.idUser(),
+                account.name(),
+                account.type(),
+                account.initialBalance(),
+                account.color(),
+                account.bank(),
+                account.active(),
+                account.createdAt()
         );
     }
 }

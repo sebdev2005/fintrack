@@ -2,27 +2,17 @@ package com.sebdev.fintrack.domain.models;
 
 import com.sebdev.fintrack.domain.exceptions.custom.AccountOwnershipException;
 import com.sebdev.fintrack.domain.exceptions.custom.InvalidAccountException;
+import com.sebdev.fintrack.domain.models.types.AccountType;
 import lombok.Builder;
-import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
-@Getter
-public class Account {
-    private final UUID id;
-    private final UUID idUser;
-    private final String name;
-    private final AccountType type;
-    private final BigDecimal initialBalance;
-    private final String color;
-    private final String bank;
-    private final boolean active;
-    private final Instant createdAt;
-
+public record Account(UUID id, UUID idUser, String name, AccountType type, BigDecimal initialBalance, String color,
+                      String bank, boolean active, Instant createdAt) {
     @Builder
-    public Account(UUID id, UUID idUser, String name, AccountType type, BigDecimal initialBalance, String color, String bank, boolean active, Instant createdAt) {
+    public Account {
         if (name == null || name.isBlank()) {
             throw new InvalidAccountException("El nombre de la cuenta no puede estar vacío");
         }
@@ -39,15 +29,6 @@ public class Account {
             throw new InvalidAccountException("El saldo inicial de la cuenta es obligatorio");
         }
 
-        this.id = id;
-        this.idUser = idUser;
-        this.name = name;
-        this.type = type;
-        this.initialBalance = initialBalance;
-        this.color = color;
-        this.bank = bank;
-        this.active = active;
-        this.createdAt = createdAt;
     }
 
     public Account deactivate(UUID requesterId) {
@@ -61,5 +42,9 @@ public class Account {
             return this;
         }
         return new Account(id, idUser, name, type, initialBalance, color, bank, false, createdAt);
+    }
+
+    public boolean isOwnedBy(UUID userId) {
+        return idUser.equals(userId);
     }
 }

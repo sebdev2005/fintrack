@@ -1,9 +1,10 @@
 package com.sebdev.fintrack.infrastructure.persistence;
 
 
-import com.sebdev.fintrack.domain.models.AccountType;
+import com.sebdev.fintrack.domain.models.types.AccountType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class AccountEntity {
     private UUID id;
 
     @Column(name = "id_user")
-    @NotBlank
+    @NotNull
     private UUID idUser;
 
     @NotBlank
@@ -34,11 +35,11 @@ public class AccountEntity {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @NotBlank
+    @NotNull
     private AccountType type;
 
     @Column(name = "initial_balance")
-    @NotBlank
+    @NotNull
     private BigDecimal initialBalance;
 
     private String color;

@@ -2,7 +2,7 @@ package com.sebdev.fintrack.application.usecases;
 
 import com.sebdev.fintrack.application.ports.AccountRepositoryPort;
 import com.sebdev.fintrack.domain.models.Account;
-import com.sebdev.fintrack.domain.models.AccountType;
+import com.sebdev.fintrack.domain.models.types.AccountType;
 
 import java.math.BigDecimal;
 import java.time.Instant;

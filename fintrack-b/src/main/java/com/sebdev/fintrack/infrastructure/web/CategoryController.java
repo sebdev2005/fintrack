@@ -6,15 +6,14 @@ import com.sebdev.fintrack.application.usecases.SaveCategoryUseCase;
 import com.sebdev.fintrack.domain.models.Category;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -35,23 +34,23 @@ public class CategoryController {
         this.deactivateCategoryUseCase = deactivateCategoryUseCase;
     }
 
-    @PostMapping
+    @PostMapping("/createCategory")
     public CategoryResponse save(@Valid @RequestBody SaveCategoryRequest request, @AuthenticationPrincipal Jwt jwt) {
-        UUID idUser = UUID.fromString(jwt.getSubject());
+        UUID idUser = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         Category category = saveCategoryUseCase.execute(request.name(), idUser);
         return CategoryResponse.from(category);
     }
 
     @GetMapping
     public List<CategoryResponse> list(@AuthenticationPrincipal Jwt jwt) {
-        UUID idUser = UUID.fromString(jwt.getSubject());
+        UUID idUser = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         return listCategoriesUseCase.execute(idUser).stream()
                 .map(CategoryResponse::from)
                 .toList();
     }
     @PatchMapping("/{idCategory}/deactivate")
     public CategoryResponse deactivate(@PathVariable UUID idCategory, @AuthenticationPrincipal Jwt jwt){
-        UUID idUser = UUID.fromString(jwt.getSubject());
+        UUID idUser = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         return CategoryResponse.from(deactivateCategoryUseCase.execute(idCategory,idUser));
     }
 
@@ -69,11 +68,11 @@ public class CategoryController {
     ) {
         private static CategoryResponse from(Category category) {
             return new CategoryResponse(
-                    category.getId(),
-                    category.getName(),
-                    category.getIdUser(),
-                    category.getCreatedAt(),
-                    category.isActive()
+                    category.id(),
+                    category.name(),
+                    category.idUser(),
+                    category.createdAt(),
+                    category.active()
             );
         }
     }

@@ -2,7 +2,7 @@ package com.sebdev.fintrack;
 
 import com.sebdev.fintrack.domain.exceptions.custom.InvalidAccountException;
 import com.sebdev.fintrack.domain.models.Account;
-import com.sebdev.fintrack.domain.models.AccountType;
+import com.sebdev.fintrack.domain.models.types.AccountType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -39,8 +39,8 @@ class FintrackApplicationTests {
 		void createsAccountWithValidData() {
 			Account account = validAccount().build();
 
-			assertEquals("Cuenta de ahorro", account.getName());
-			assertTrue(account.isActive());
+			assertEquals("Cuenta de ahorro", account.name());
+			assertTrue(account.active());
 		}
 
 		@ParameterizedTest

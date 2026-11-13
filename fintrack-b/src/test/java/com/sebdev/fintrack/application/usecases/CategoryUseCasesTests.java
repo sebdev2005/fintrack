@@ -23,11 +23,11 @@ class CategoryUseCasesTests {
 
         Category saved = useCase.execute("Food", userId);
 
-        assertNotNull(saved.getId());
-        assertEquals("Food", saved.getName());
-        assertEquals(userId, saved.getIdUser());
-        assertNotNull(saved.getCreatedAt());
-        assertTrue(saved.isActive());
+        assertNotNull(saved.id());
+        assertEquals("Food", saved.name());
+        assertEquals(userId, saved.idUser());
+        assertNotNull(saved.createdAt());
+        assertTrue(saved.active());
         assertEquals(saved, repository.savedCategories.getFirst());
     }
 
@@ -68,7 +68,7 @@ class CategoryUseCasesTests {
 
         Category deactivated = category.deactivated(userId);
 
-        assertFalse(deactivated.isActive());
+        assertFalse(deactivated.active());
     }
 
     @Test
@@ -102,7 +102,7 @@ class CategoryUseCasesTests {
         @Override
         public Optional<Category> findById(UUID id) {
             return savedCategories.stream()
-                    .filter(category -> category.getId().equals(id))
+                    .filter(category -> category.id().equals(id))
                     .findFirst();
         }
     }
