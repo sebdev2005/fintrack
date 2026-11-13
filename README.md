@@ -355,4 +355,4 @@ La documentación interactiva está en `/swagger-ui.html`.
 
 ## Autor
 
-Proyecto de [tu nombre] como ejercicio de arquitectura y portafolio.
+Proyecto de Sebastian Santacruz.
