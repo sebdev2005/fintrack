@@ -91,20 +91,40 @@ Reglas de dependencia que se respetan:
 
 ## Modelo de datos
 
-```
-auth.users (Supabase) ──1:1── profile ──1:N── account ──1:N── movement ──N:1── category
-                                  │                                              │
-                                  └────────────── 1:N (opcional) ────────────────┘
-```
+Todas las tablas del modelo, incluidas las que aún no están creadas. Los nombres de las pendientes son una propuesta y pueden cambiar al implementarlas.
 
-| Tabla | Campos principales |
-|---|---|
-| `profile` | `id` (= `auth.users.id`), `name`, `currency`, `created_at` |
-| `category` | `id`, `name`, `id_user` (nullable), `active`, `created_at` |
-| `account` | `id`, `id_user`, `name`, `type`, `initial_balance`, `color`, `bank`, `active`, `created_at` |
-| `movement` | `id`, `id_account`, `id_category` (nullable), `type`, `amount`, `occurred_on`, `note`, `created_at` |
+| Tabla | Estado | Campos principales |
+|---|---|---|
+| `profile` | Creada | `id` (= `auth.users.id`), `name`, `currency`, `created_at` |
+| `category` | Creada | `id`, `name`, `id_user` (nullable), `active`, `created_at` |
+| `account` | Creada | `id`, `id_user`, `name`, `type`, `initial_balance`, `color`, `bank`, `active`, `created_at` |
+| `movement` | En desarrollo | `id`, `id_account`, `id_category` (nullable), `type`, `amount`, `occurred_on`, `note`, `created_at`. Se le suman `id_obligation` e `id_saving_goal` (nullable) cuando existan esas tablas |
+| `saving_goal` | Pendiente | `id`, `id_user`, `purpose`, `target_amount`, `current_amount` (caché), `deadline`, `periodic_contribution`, `active`, `created_at` |
+| `obligation` | Pendiente | `id`, `id_user`, `name`, `purpose`, `target_amount`, `frequency`, `total_term`, `paid_installments`, `status`, `rate`, `rate_type`, `periodicity`, `rate_modality`, `remaining_balance`, `interest_paid`, `cutoff_date`, `created_at` |
+| `bank_connection` | Pendiente | `id`, `id_account` (único), `provider`, `bank`, `token_ref` (cifrado), `status`, `last_sync_at`, `created_at` |
+| `notification` | Pendiente | `id`, `id_user`, `type`, `message`, `is_read`, `created_at` |
 
-Lo que **no** es una tabla (se calcula desde `movement`): gasto libre del mes, gasto por categoría, balance mensual y saldo actual de una cuenta.
+### Relaciones
+
+| Relación | Cardinalidad | Dónde va la FK |
+|---|---|---|
+| `auth.users` → `profile` | 1:1 | `profile.id` |
+| `profile` → `account` | 1:N | `account.id_user` |
+| `profile` → `category` | 1:N (opcional) | `category.id_user` (`NULL` = categoría del sistema) |
+| `profile` → `saving_goal` | 1:N | `saving_goal.id_user` |
+| `profile` → `obligation` | 1:N | `obligation.id_user` |
+| `profile` → `notification` | 1:N | `notification.id_user` |
+| `account` → `movement` | 1:N | `movement.id_account` |
+| `category` → `movement` | 1:N (opcional) | `movement.id_category` |
+| `saving_goal` → `movement` | 1:N (opcional) | `movement.id_saving_goal` |
+| `obligation` → `movement` | 1:N (opcional) | `movement.id_obligation` |
+| `account` → `bank_connection` | 1:1 | `bank_connection.id_account` |
+
+En una relación 1:N, la FK vive siempre del lado "muchos". Y `movement` no tiene `id_user`: su dueño se averigua por la cuenta.
+
+Lo que **no** es una tabla (se calcula desde `movement`): gasto libre del mes, gasto por categoría, balance mensual y saldo actual de una cuenta. La única cifra derivada que se guarda a propósito, como caché, es `saving_goal.current_amount`; la fuente de verdad sigue siendo `movement`.
+
+Por revisar al implementar `obligation`: `remaining_balance` e `interest_paid` no se pueden reconstruir solo con movimientos si el movimiento no distingue capital de interés. Hay que decidir si se guardan o si el movimiento registra esa división.
 
 <details>
 <summary>Esquema SQL de referencia</summary>
@@ -188,6 +208,86 @@ Seed mínimo de categorías del sistema:
 ```sql
 insert into public.category (name) values
   ('Comida'), ('Transporte'), ('Ocio'), ('Servicios'), ('Salud'), ('Varios');
+```
+
+</details>
+
+<details>
+<summary>Esquema SQL de las tablas pendientes (borrador)</summary>
+
+Borrador: aún no se ha ejecutado. Los valores permitidos de `frequency`, `periodicity`, `bank_connection.status` y `notification.type` todavía no están definidos.
+
+```sql
+-- Meta de ahorro virtual: no está ligada a ninguna cuenta.
+-- El dinero se asocia a través de movement.id_saving_goal.
+create table public.saving_goal (
+  id uuid primary key default gen_random_uuid(),
+  id_user uuid not null references public.profile (id) on delete cascade,
+  purpose varchar(60) not null,
+  target_amount numeric(19,4) not null check (target_amount > 0),
+  current_amount numeric(19,4) not null default 0,  -- caché; la fuente de verdad es movement
+  deadline date,
+  periodic_contribution numeric(19,4),
+  active boolean not null default true,
+  created_at timestamptz not null default now()
+);
+create index saving_goal_id_user_idx on public.saving_goal (id_user);
+
+-- Deudas con cuotas e interés
+create table public.obligation (
+  id uuid primary key default gen_random_uuid(),
+  id_user uuid not null references public.profile (id) on delete cascade,
+  name varchar(60) not null,
+  purpose varchar(100),
+  target_amount numeric(19,4) not null check (target_amount > 0),  -- monto original
+  frequency varchar(20) not null,
+  total_term int not null check (total_term > 0),
+  paid_installments int not null default 0 check (paid_installments >= 0),
+  status varchar(20) not null default 'ACTIVE'
+    check (status in ('ACTIVE', 'PAID', 'OVERDUE')),
+  rate numeric(9,6) not null default 0,
+  rate_type varchar(20) check (rate_type in ('NOMINAL', 'EFFECTIVE')),
+  periodicity varchar(20),
+  rate_modality varchar(20) check (rate_modality in ('FIXED', 'VARIABLE')),
+  remaining_balance numeric(19,4) not null,
+  interest_paid numeric(19,4) not null default 0,
+  cutoff_date date,
+  created_at timestamptz not null default now(),
+  check (paid_installments <= total_term)
+);
+create index obligation_id_user_idx on public.obligation (id_user);
+
+-- Sincronización bancaria: una cuenta puede existir sin ella
+create table public.bank_connection (
+  id uuid primary key default gen_random_uuid(),
+  id_account uuid not null unique references public.account (id) on delete cascade,
+  provider varchar(20) not null check (provider in ('BELVO', 'PLAID')),
+  bank varchar,
+  token_ref text not null,  -- cifrado en reposo; nunca en texto plano
+  status varchar(20) not null,
+  last_sync_at timestamptz,
+  created_at timestamptz not null default now()
+);
+
+create table public.notification (
+  id uuid primary key default gen_random_uuid(),
+  id_user uuid not null references public.profile (id) on delete cascade,
+  type varchar(30) not null,
+  message varchar(300) not null,
+  is_read boolean not null default false,
+  created_at timestamptz not null default now()
+);
+create index notification_user_unread_idx on public.notification (id_user, is_read);
+
+-- Enlaces opcionales desde movement, una vez existan las tablas anteriores
+alter table public.movement
+  add column id_obligation uuid references public.obligation (id),
+  add column id_saving_goal uuid references public.saving_goal (id);
+
+alter table public.saving_goal     enable row level security;
+alter table public.obligation      enable row level security;
+alter table public.bank_connection enable row level security;
+alter table public.notification    enable row level security;
 ```
 
 </details>
@@ -355,4 +455,4 @@ La documentación interactiva está en `/swagger-ui.html`.
 
 ## Autor
 
-Proyecto de Sebastian Santacruz.
+Proyecto de [tu nombre] como ejercicio de arquitectura y portafolio.
