@@ -2,11 +2,16 @@ package com.sebdev.fintrack.infrastructure.persistence;
 
 import com.sebdev.fintrack.application.ports.MovementRepositoryPort;
 import com.sebdev.fintrack.domain.models.Movement;
+import com.sebdev.fintrack.domain.models.types.MovementType;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository
 public class MovementPersistenceAdapter implements MovementRepositoryPort {
 
     private final MovementJpaRepository movementJpaRepository;
@@ -40,6 +45,12 @@ public class MovementPersistenceAdapter implements MovementRepositoryPort {
                 .stream().map(MovementPersistenceAdapter::toDomain)
                 .toList();
     }
+
+    @Override
+    public BigDecimal netByAccount(UUID idAccount) {
+        return movementJpaRepository.netByAccount(idAccount, MovementType.INCOME);
+    }
+
     public static MovementEntity toEntity(Movement movement){
         return new MovementEntity(
                 movement.id(),

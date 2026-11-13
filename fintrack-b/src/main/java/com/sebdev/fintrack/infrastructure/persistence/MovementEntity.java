@@ -2,12 +2,11 @@ package com.sebdev.fintrack.infrastructure.persistence;
 
 import com.sebdev.fintrack.domain.models.types.MovementType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,26 +27,25 @@ public class MovementEntity {
     @Id
     private UUID id;
 
-    @NotNull
+    @Column(name = "id_account", nullable = false)
     private UUID idAccount;
 
+    @Column(name = "id_category")
     private UUID idCategory;
 
-    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private MovementType type;
 
-    @NotNull
-    @DecimalMin(value = "0.0", message = "El monto no puede ser negativo")
+    @Column(nullable = false, precision = 19, scale = 4)
     private BigDecimal amount;
 
-    @NotNull
-    @NotBlank
+    @Column(name = "occurred_on", nullable = false)
     private LocalDate occurredOn;
 
-    @Size(max = 200)
+    @Column(length = 200)
     private String note;
 
-    @NotNull
-    @NotBlank
+    @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 }

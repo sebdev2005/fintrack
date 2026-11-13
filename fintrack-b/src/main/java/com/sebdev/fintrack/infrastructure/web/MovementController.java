@@ -1,12 +1,11 @@
 package com.sebdev.fintrack.infrastructure.web;
 
-import com.nimbusds.jose.shaded.jcip.NotThreadSafe;
 import com.sebdev.fintrack.application.usecases.ListMovementForAccountUseCase;
 import com.sebdev.fintrack.application.usecases.ListMovementForUserUseCase;
+import com.sebdev.fintrack.application.usecases.NetByAccountUseCase;
 import com.sebdev.fintrack.application.usecases.SaveMovementUseCase;
 import com.sebdev.fintrack.domain.models.Movement;
 import com.sebdev.fintrack.domain.models.types.MovementType;
-import com.sebdev.fintrack.infrastructure.persistence.MovementEntity;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
@@ -29,11 +28,13 @@ public class MovementController {
     private final SaveMovementUseCase saveMovementUseCase;
     private final ListMovementForUserUseCase listMovementForUserUseCase;
     private final ListMovementForAccountUseCase listMovementForAccountUseCase;
+    private final NetByAccountUseCase netByAccountUseCase;
 
-    public MovementController(SaveMovementUseCase saveMovementUseCase, ListMovementForUserUseCase listMovementForUserUseCase, ListMovementForAccountUseCase listMovementForAccountUseCase) {
+    public MovementController(SaveMovementUseCase saveMovementUseCase, ListMovementForUserUseCase listMovementForUserUseCase, ListMovementForAccountUseCase listMovementForAccountUseCase, NetByAccountUseCase netByAccountUseCase) {
         this.saveMovementUseCase = saveMovementUseCase;
         this.listMovementForUserUseCase = listMovementForUserUseCase;
         this.listMovementForAccountUseCase = listMovementForAccountUseCase;
+        this.netByAccountUseCase = netByAccountUseCase;
     }
 
     @PostMapping("/createMovement")
@@ -58,8 +59,18 @@ public class MovementController {
                 .stream().map(MovementResponse::from)
                 .toList();
     }
+    
+    @GetMapping("/{idAccount}/balance")
+    public BalanceResponse balanceForAccount(@PathVariable UUID idAccount, @AuthenticationPrincipal Jwt jwt){
+        UUID idUser = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
+        BigDecimal newAmount = netByAccountUseCase.execute(idAccount, idUser);
+        return new BalanceResponse(idAccount,newAmount);
+    }
+    public record BalanceResponse(UUID idAccount, BigDecimal balance){
 
-    public record MovementRequest(@NotNull UUID idAccount, UUID idCategory, @NotNull MovementType type, @DecimalMin(value = "0.0") BigDecimal amount,
+    }
+
+    public record MovementRequest(@NotNull UUID idAccount, UUID idCategory, @NotNull MovementType type, @NotNull @DecimalMin(value = "0.0", inclusive = false) BigDecimal amount,
                                    @NotNull LocalDate occurredOn, @Size(max = 200) String note){
 
     }
