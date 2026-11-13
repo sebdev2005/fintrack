@@ -1,4 +1,3 @@
-# fintrack
 # FinTrack
 
 Gestor de finanzas personales. Centraliza cuentas, movimientos y categorías en un solo lugar para tener visibilidad clara del estado financiero, con la meta de conectarse más adelante a bancos reales (Open Banking).
