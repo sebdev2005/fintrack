@@ -56,8 +56,13 @@ public class ApplicationConfiguration {
         return new ListMovementForUserUseCase(movementRepositoryPort);
     }
 
-    @Bean NetByAccountUseCase netByAccountUseCase(MovementRepositoryPort movementRepositoryPort, AccountRepositoryPort accountRepositoryPort){
+    @Bean
+    NetByAccountUseCase netByAccountUseCase(MovementRepositoryPort movementRepositoryPort, AccountRepositoryPort accountRepositoryPort){
         return new NetByAccountUseCase(movementRepositoryPort,accountRepositoryPort);
     }
 
+    @Bean
+    GetMonthlySummaryUseCase getMonthlySummaryUseCase(MovementRepositoryPort movementRepositoryPort){
+        return new GetMonthlySummaryUseCase(movementRepositoryPort);
+    }
 }

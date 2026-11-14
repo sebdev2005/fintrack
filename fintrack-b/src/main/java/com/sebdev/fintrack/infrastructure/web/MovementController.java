@@ -1,5 +1,6 @@
 package com.sebdev.fintrack.infrastructure.web;
 
+import com.sebdev.fintrack.application.results.CategoryTotal;
 import com.sebdev.fintrack.application.usecases.ListMovementForAccountUseCase;
 import com.sebdev.fintrack.application.usecases.ListMovementForUserUseCase;
 import com.sebdev.fintrack.application.usecases.NetByAccountUseCase;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -66,6 +68,7 @@ public class MovementController {
         BigDecimal newAmount = netByAccountUseCase.execute(idAccount, idUser);
         return new BalanceResponse(idAccount,newAmount);
     }
+
     public record BalanceResponse(UUID idAccount, BigDecimal balance){
 
     }
