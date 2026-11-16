@@ -79,4 +79,24 @@ public class GlobalHandlerExceptions {
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(InvalidSavingGoalException.class)
+    public ResponseEntity<ErrorResponse> handlerInvalidSavingGoal(InvalidSavingGoalException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                LocalDateTime.now().toString()
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(SavingGoalOwnershipException.class)
+    public ResponseEntity<ErrorResponse> handlerSavingGoalOwnership(SavingGoalOwnershipException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.FORBIDDEN.value(),
+                ex.getMessage(),
+                LocalDateTime.now().toString()
+        );
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
 }
