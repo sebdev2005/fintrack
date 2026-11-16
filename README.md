@@ -11,8 +11,8 @@ Proyecto personal de portafolio: backend en **Java + Spring Boot** con **arquite
 | Autenticación (validación de JWT de Supabase) | Listo |
 | Categorías (listar, crear, desactivar) | Listo |
 | Cuentas (listar, crear, desactivar) | Listo |
-| Movimientos (ingresos y gastos) | En desarrollo |
-| Ahorros y obligaciones (deudas) | Pendiente |
+| Movimientos (ingresos y gastos) | Listo por ahora |
+| Ahorros y obligaciones (deudas) | En proceso |
 | Resumen mensual y gasto por categoría | Pendiente |
 | Frontend (React + TypeScript) | Pendiente |
 | Conexión bancaria (Belvo / Plaid) y notificaciones | Pendiente |
