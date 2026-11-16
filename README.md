@@ -435,7 +435,7 @@ La documentación interactiva está en `/swagger-ui.html`.
 - [x] Estructura hexagonal y primer flujo completo (categorías)
 - [x] Autenticación con JWT de Supabase
 - [x] Cuentas
-- [ ] Movimientos: crear y listar por cuenta, con paginación
+- [x] Movimientos: crear y listar por cuenta, con paginación
 - [ ] Tests de dominio y de casos de uso
 - [ ] Saldo actual de una cuenta y resumen mensual (agregaciones en SQL)
 - [ ] Ahorros y obligaciones
@@ -455,4 +455,4 @@ La documentación interactiva está en `/swagger-ui.html`.
 
 ## Autor
 
-Proyecto de [tu nombre] como ejercicio de arquitectura y portafolio.
+Proyecto de Sebastian Santacruz.
