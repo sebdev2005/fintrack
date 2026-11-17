@@ -380,7 +380,15 @@ Todas las rutas exigen `Authorization: Bearer <access_token>`. El usuario se obt
 | `PATCH` | `/api/categories/{id}/deactivate` | Desactiva una categoría propia |
 | `GET` | `/api/accounts` | Cuentas activas del usuario |
 | `POST` | `/api/accounts` | Crea una cuenta |
-| `PATCH` | `/api/accounts/{id}/deactivate` | Desactiva una cuenta propia |
+| `GET` | `/api/accounts/{id}/deactivate` | Desactiva una cuenta propia |
+| `GET` | `/api/movements` | Lista los movimientos del usuario |
+| `GET` | `/api/movements/forAccounts?idAccount={uuid}` | Lista los movimientos de una cuenta propia |
+| `POST` | `/api/movements/save` | Crea un movimiento. Body: {"idAccount": "uuid", "type": "EXPENSE", "amount": 25.50, "occurredOn": "2026-11-16", "idCategory": "uuid-opcional", "idSavingGoal": "uuid-opcional", "note": "Almuerzo"} |
+| `GET` | `/api/movements/{idAccount}/balance` | Calcula el saldo de una cuenta propia |
+| `GET` | `/api/summary?month=2026-11` | Devuelve ingresos, gastos, balance y gastos agrupados por categoría para el mes |
+| `GET` | `/api/saving-goals` | Lista las metas de ahorro activas del usuario |
+| `POST` | `/api/saving-goals/save` | Crea una meta. Body: {"purpose": "Viaje", "targetAmount": 1500000, "deadline": "2027-06-01", "periodicContribution": 100000} |
+| `PATCH` | `/api/saving-goals/{idSavingGoal}/deactivate` | Desactiva una meta propia |
 
 Ejemplo de creación de cuenta:
 
