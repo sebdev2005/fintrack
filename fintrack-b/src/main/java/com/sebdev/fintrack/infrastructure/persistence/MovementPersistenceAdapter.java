@@ -18,8 +18,8 @@ public class MovementPersistenceAdapter implements MovementRepositoryPort {
 
     private final MovementJpaRepository movementJpaRepository;
 
-    public MovementPersistenceAdapter(MovementJpaRepository movementJpaRepository) {
-        this.movementJpaRepository = movementJpaRepository;
+    public MovementPersistenceAdapter(MovementJpaRepository repository) {
+        this.movementJpaRepository = repository;
     }
 
     @Override
@@ -71,6 +71,7 @@ public class MovementPersistenceAdapter implements MovementRepositoryPort {
                 movement.id(),
                 movement.idAccount(),
                 movement.idCategory(),
+                movement.idSavingGoal(),
                 movement.type(),
                 movement.amount(),
                 movement.occurredOn(),
@@ -84,6 +85,7 @@ public class MovementPersistenceAdapter implements MovementRepositoryPort {
                 .id(movementEntity.getId())
                 .idAccount(movementEntity.getIdAccount())
                 .idCategory(movementEntity.getIdCategory())
+                .idSavingGoal(movementEntity.getIdSavingGoal())
                 .type(movementEntity.getType())
                 .amount(movementEntity.getAmount())
                 .occurredOn(movementEntity.getOccurredOn())

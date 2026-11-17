@@ -33,7 +33,7 @@ public class AccountController {
         this.listAccountsUseCase = listAccountsUseCase;
         this.deactivateAccountUseCase = deactivateAccountUseCase;
     }
-    @PostMapping("/createAccount")
+    @PostMapping("/save")
     public AccountResponse save(@Valid @RequestBody AccountRequest request, @AuthenticationPrincipal Jwt jwt){
         UUID idUser =  UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         Account account = saveAccountUseCase.execute( new SaveAccountUseCase.Command(request.name, request.type, request.initialBalance, request.color, request.bank), idUser);

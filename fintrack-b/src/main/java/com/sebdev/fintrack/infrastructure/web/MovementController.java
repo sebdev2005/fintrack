@@ -39,10 +39,10 @@ public class MovementController {
         this.netByAccountUseCase = netByAccountUseCase;
     }
 
-    @PostMapping("/createMovement")
+    @PostMapping("/save")
     public MovementResponse save(@Valid @RequestBody MovementRequest request, @AuthenticationPrincipal Jwt jwt){
         UUID idUser = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
-        Movement movement = saveMovementUseCase.execute(new SaveMovementUseCase.Command(request.idAccount,request.idCategory,request.type,request.amount, request.occurredOn,request.note), idUser);
+        Movement movement = saveMovementUseCase.execute(new SaveMovementUseCase.Command(request.idAccount,request.idCategory, request.idSavingGoal,request.type,request.amount, request.occurredOn,request.note), idUser);
         return MovementResponse.from(movement);
     }
 
@@ -54,7 +54,7 @@ public class MovementController {
                 .toList();
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public List<MovementResponse> movementsForUser(@AuthenticationPrincipal Jwt jwt){
         UUID idUser = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         return listMovementForUserUseCase.execute( idUser)
@@ -73,18 +73,19 @@ public class MovementController {
 
     }
 
-    public record MovementRequest(@NotNull UUID idAccount, UUID idCategory, @NotNull MovementType type, @NotNull @DecimalMin(value = "0.0", inclusive = false) BigDecimal amount,
+    public record MovementRequest(@NotNull UUID idAccount, UUID idCategory, UUID idSavingGoal, @NotNull MovementType type, @NotNull @DecimalMin(value = "0.0", inclusive = false) BigDecimal amount,
                                    @NotNull LocalDate occurredOn, @Size(max = 200) String note){
 
     }
 
-    public record MovementResponse(UUID id, UUID idAccount, UUID idCategory, MovementType type, BigDecimal amount,
+    public record MovementResponse(UUID id, UUID idAccount, UUID idCategory, UUID idSavingGoal, MovementType type, BigDecimal amount,
                                     LocalDate occurredOn, String note, Instant createdAt){
         private static MovementResponse from(Movement movement){
             return new MovementResponse(
                     movement.id(),
                     movement.idAccount(),
                     movement.idCategory(),
+                    movement.idSavingGoal(),
                     movement.type(),
                     movement.amount(),
                     movement.occurredOn(),

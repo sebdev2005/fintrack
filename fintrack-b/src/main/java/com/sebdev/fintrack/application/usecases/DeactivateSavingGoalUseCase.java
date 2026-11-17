@@ -17,8 +17,8 @@ public class DeactivateSavingGoalUseCase {
     public SavingGoal execute(UUID idSavingGoal, UUID idUser) {
         SavingGoal savingGoal = port.findById(idSavingGoal)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe este ahorro para este usuario"));
-        savingGoal.deactivate(idUser);
-        return port.save(savingGoal);
+        SavingGoal deactivated = savingGoal.deactivate(idUser);
+        return port.save(deactivated);
     }
 
 

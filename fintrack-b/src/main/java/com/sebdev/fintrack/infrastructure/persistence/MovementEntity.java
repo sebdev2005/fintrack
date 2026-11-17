@@ -33,6 +33,9 @@ public class MovementEntity {
     @Column(name = "id_category")
     private UUID idCategory;
 
+    @Column(name = "id_saving_goal")
+    private UUID idSavingGoal;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private MovementType type;
