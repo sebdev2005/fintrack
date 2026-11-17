@@ -35,7 +35,7 @@ public interface MovementJpaRepository extends JpaRepository<MovementEntity, UUI
     SELECT COALESCE(SUM(m.amount), 0)
     FROM MovementEntity m
     WHERE m.type = :type
-      AND m.occurredOn >= :startDate AND m.occurredOn < :endDate
+      AND m.occurredOn >= :startDate AND m.occurredOn < :endDate AND m.idSavingGoal IS NULL
       AND m.idAccount IN (SELECT a.id FROM AccountEntity a WHERE a.idUser = :idUser)
     """)
     BigDecimal totalByType(@Param("idUser") UUID idUser, @Param("type") MovementType type,
@@ -46,7 +46,7 @@ public interface MovementJpaRepository extends JpaRepository<MovementEntity, UUI
     SELECT m.idCategory, SUM(m.amount)
     FROM MovementEntity m
     WHERE m.type = :type
-      AND m.occurredOn >= :startDate AND m.occurredOn < :endDate
+      AND m.occurredOn >= :startDate AND m.occurredOn < :endDate AND m.idSavingGoal IS NULL
       AND m.idAccount IN (SELECT a.id FROM AccountEntity a WHERE a.idUser = :idUser)
     GROUP BY m.idCategory
     ORDER BY SUM(m.amount) DESC

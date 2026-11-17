@@ -9,7 +9,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public record Movement(UUID id, UUID idAccount, UUID idCategory, MovementType type, BigDecimal amount,
+public record Movement(UUID id, UUID idAccount, UUID idCategory, UUID idSavingGoal,MovementType type, BigDecimal amount,
                        LocalDate occurredOn, String note, Instant createdAt) {
     @Builder
     public Movement {

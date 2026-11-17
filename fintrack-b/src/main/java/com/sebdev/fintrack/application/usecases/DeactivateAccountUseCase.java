@@ -17,7 +17,7 @@ public class DeactivateAccountUseCase {
     public Account execute(UUID id, UUID idUser){
         Account account = port.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontro la cuenta"));
-        account.deactivate(idUser);
-        return port.save(account);
+        Account deactivated = account.deactivate(idUser);
+        return port.save(deactivated);
     }
 }

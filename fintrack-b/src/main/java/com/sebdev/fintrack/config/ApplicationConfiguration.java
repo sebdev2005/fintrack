@@ -3,8 +3,8 @@ package com.sebdev.fintrack.config;
 import com.sebdev.fintrack.application.ports.AccountRepositoryPort;
 import com.sebdev.fintrack.application.ports.CategoryRepositoryPort;
 import com.sebdev.fintrack.application.ports.MovementRepositoryPort;
+import com.sebdev.fintrack.application.ports.SavingGoalRepositoryPort;
 import com.sebdev.fintrack.application.usecases.*;
-import com.sebdev.fintrack.domain.models.Movement;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -42,8 +42,8 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    SaveMovementUseCase saveMovementUseCase(AccountRepositoryPort accountRepositoryPort, CategoryRepositoryPort categoryRepositoryPort, MovementRepositoryPort movementRepositoryPort){
-        return new SaveMovementUseCase(accountRepositoryPort,categoryRepositoryPort,movementRepositoryPort);
+    SaveMovementUseCase saveMovementUseCase(AccountRepositoryPort accountRepositoryPort, CategoryRepositoryPort categoryRepositoryPort, MovementRepositoryPort movementRepositoryPort, SavingGoalRepositoryPort savingGoalRepositoryPort){
+        return new SaveMovementUseCase(accountRepositoryPort,categoryRepositoryPort,movementRepositoryPort,savingGoalRepositoryPort);
     }
 
     @Bean
@@ -64,5 +64,20 @@ public class ApplicationConfiguration {
     @Bean
     GetMonthlySummaryUseCase getMonthlySummaryUseCase(MovementRepositoryPort movementRepositoryPort){
         return new GetMonthlySummaryUseCase(movementRepositoryPort);
+    }
+
+    @Bean
+    SaveSavingGoalUseCase saveSavingGoalUseCase(SavingGoalRepositoryPort savingGoalRepositoryPort) {
+        return new SaveSavingGoalUseCase(savingGoalRepositoryPort);
+    }
+
+    @Bean
+    ListSavingGoalsUseCase listSavingGoalsUseCase(SavingGoalRepositoryPort savingGoalRepositoryPort) {
+        return new ListSavingGoalsUseCase(savingGoalRepositoryPort);
+    }
+
+    @Bean
+    DeactivateSavingGoalUseCase deactivateSavingGoalUseCase(SavingGoalRepositoryPort savingGoalRepositoryPort) {
+        return new DeactivateSavingGoalUseCase(savingGoalRepositoryPort);
     }
 }
